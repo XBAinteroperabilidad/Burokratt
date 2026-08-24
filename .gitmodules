@@ -1,0 +1,12 @@
+[submodule "Customer-service"]
+	path = Customer-service
+	url = https://github.com/XBAinteroperabilidad/Customer-service.git
+	branch = feature/local-build
+[submodule "Chat-Widget"]
+	path = Chat-Widget
+	url = https://github.com/XBAinteroperabilidad/Chat-Widget.git
+	branch = feature/es-translation
+[submodule "Installation-Guides"]
+	path = Installation-Guides
+	url = https://github.com/XBAinteroperabilidad/Installation-Guides.git
+	branch = feature/local-dev-setup
