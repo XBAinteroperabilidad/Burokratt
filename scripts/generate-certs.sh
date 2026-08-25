@@ -56,9 +56,12 @@ TIM_DIR="$BASE/tim"
 if [ -f "$TIM_DIR/jwtkeystore.jks" ] && [ "$FORCE" != "--force" ]; then
   echo "  - $TIM_DIR: jwtkeystore.jks already present, skipping"
 else
-  # Uses the byk-tim image itself as a throwaway JDK — no local java/keytool needed.
+  # Uses a plain JDK image as a throwaway keytool — no local java/keytool needed.
+  # (Tried the byk-tim image itself first, but its Tomcat base declares a VOLUME
+  # that collides with mounting anything into it — fails with "cannot mount
+  # volume over existing file". A generic JDK image sidesteps that entirely.)
   # Alias/passwords must match TIM's jwt-integration.signature.* env vars in docker-compose.yml.
-  docker run --rm -v "$TIM_DIR:/out" --entrypoint keytool riaee/byk-tim:07 \
+  docker run --rm -v "$TIM_DIR:/out" --entrypoint keytool eclipse-temurin:17-jdk \
     -genkeypair -alias tim_jwt -keyalg RSA -keysize 2048 \
     -keystore /out/jwtkeystore.jks -validity 3650 -storetype JKS \
     -storepass safe_keystore_password -keypass safe_keystore_password \

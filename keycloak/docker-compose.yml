@@ -1,0 +1,32 @@
+version: '3.9'
+
+# Local stand-in for TARA (Estonia's national auth), so login works without
+# needing real TARA credentials. Realm/client/test-user are pre-imported from
+# ./import/burokratt-realm.json (see keycloak/import/burokratt-realm.json for
+# the test user: testuser / testuser).
+#
+# Bring this up AFTER the main stack (../Installation-Guides/.../docker-compose.yml)
+# or the sql-db one — either creates the shared `bykstack` network this attaches to.
+
+services:
+  byk-keycloak:
+    container_name: byk-keycloak
+    image: quay.io/keycloak/keycloak:26.7.2
+    command: start-dev --import-realm
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KEYCLOAK_ADMIN_USER:-admin}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME_STRICT=false
+    volumes:
+      - ./import:/opt/keycloak/data/import:ro
+    ports:
+      - 9080:8080
+    restart: always
+    networks:
+      - bykstack
+
+networks:
+  bykstack:
+    name: bykstack
+    external: true
